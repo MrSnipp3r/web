@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventos - ONS_TWO</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a1a;
+            color: #fff;
+            overflow: hidden; /* Para ocultar el contenido que se mueve fuera de la pantalla */
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .header-content {
+            display: flex;
+            align-items: center;
+        }
+        .header-content h1 {
+            margin: 0;
+            padding-right: 10px;
+        }
+        .header-content img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+        .main {
+            padding: 20px;
+        }
+        .main h2 {
+            font-size: 2em;
+            margin-top: 0;
+            border-bottom: 2px solid #444;
+            padding-bottom: 10px;
+        }
+        .main p {
+            font-size: 1.25em;
+            line-height: 1.6;
+        }
+        .events {
+            text-align: center;
+            margin-top: 50px;
+        }
+        .events h3 {
+            font-size: 3em;
+            color: #ffcc00;
+            animation: pulse 1.5s infinite;
+        }
+        .events p {
+            font-size: 1.5em;
+            color: #ccc;
+            margin: 20px 0;
+        }
+        .events .game {
+            text-align: center;
+            display: none; /* Inicialmente oculto */
+            margin-top: 20px;
+            position: relative;
+            height: 500px; /* Ajusta el tamaño según sea necesario */
+            overflow: hidden;
+        }
+        .game img {
+            cursor: pointer;
+            position: absolute;
+            width: 100px; /* Ajusta el tamaño según sea necesario */
+            height: 100px; /* Ajusta el tamaño según sea necesario */
+        }
+        .reset-button {
+            padding: 15px 30px;
+            font-size: 1.5em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #ff3333;
+            color: #fff;
+            margin-top: 20px;
+        }
+        .reset-button:hover {
+            background-color: #cc0000;
+        }
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        .timer {
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+        .final-score {
+            font-size: 2em;
+            color: #ffcc00;
+            margin-top: 20px;
+            display: none;
+        }
+        .start-button {
+            display: block;
+            margin: 20px auto;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .start-button img {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Bienvenido a la web de ONS_TWO</h1>
+            <img src="https://static-cdn.jtvnw.net/jtv_user_pictures/c8bb813c-2860-4516-bad3-c401a8fc5e25-profile_image-300x300.png" alt="ONS_TWO">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="news.html">Noticias</a></li>
+                <li><a href="social.html">Redes Sociales</a></li>
+                <li><a href="events.html">Eventos</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="main">
+        <h2>Eventos</h2>
+        <div class="events">
+            <h3>Próximamente</h3>
+            <p>Mantente atento... algo emocionante está por llegar.</p>
+            <button class="start-button" onclick="startGame()">
+                <img src="https://i.ibb.co/rMTrBH4/cat.png" alt="Iniciar Minijuego">
+            </button>
+            <div class="game">
+                <h3>¡Desafío Legionario!</h3>
+                <p>Listo para el desafío legionario?</p>
+                <img id="gameButton" src="https://static-cdn.jtvnw.net/jtv_user_pictures/c8bb813c-2860-4516-bad3-c401a8fc5e25-profile_image-300x300.png" onclick="increaseScore()">
+                <button class="reset-button" onclick="resetGame()">Reiniciar Puntaje</button>
+                <p>Puntaje: <span id="score">0</span></p>
+                <p class="timer">Tiempo restante: <span id="timer">60</span> segundos</p>
+                <p id="finalScore" class="final-score">Puntuación Final: <span id="finalScoreValue">0</span></p>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 ONS_TWO</p>
+    </footer>
+
+    <script>
+        let score = 0;
+        let timerValue = 60;
+        let timerInterval;
+        let gameStarted = false;
+        let moveInterval;
+        const button = document.getElementById('gameButton');
+        const gameContainer = document.querySelector('.game');
+        const startButton = document.querySelector('.start-button');
+
+        function startGame() {
+            if (!gameStarted) {
+                gameStarted = true;
+                startButton.style.display = 'none'; // Oculta el botón de inicio
+                gameContainer.style.display = 'block'; // Muestra el minijuego
+                button.style.position = 'absolute';
+                moveButton();
+                startTimer();
+            }
+            increaseScore();
+        }
+
+        function increaseScore() {
+            if (gameStarted) {
+                score++;
+                document.getElementById('score').innerText = score;
+            }
+        }
+
+        function resetGame() {
+            score = 0;
+            document.getElementById('score').innerText = score;
+            document.getElementById('finalScore').style.display = 'none';
+            timerValue = 60;
+            document.getElementById('timer').innerText = timerValue;
+            clearInterval(timerInterval);
+            clearInterval(moveInterval);
+            button.style.top = '0px';
+            button.style.left = '0px';
+            button.style.transition = 'none'; // Desactiva la transición durante el reinicio
+            button.style.transition = ''; // Reactiva la transición
+            gameStarted = false;
+            gameContainer.style.display = 'none'; // Oculta el minijuego
+            startButton.style.display = 'block'; // Muestra el botón de inicio
+        }
+
+        function moveButton() {
+            const container = button.parentElement;
+            const containerWidth = container.clientWidth - button.clientWidth;
+            const containerHeight = container.clientHeight - button.clientHeight;
+
+            function getRandomPosition() {
+                return {
+                    top: Math.random() * containerHeight + 'px',
+                    left: Math.random() * containerWidth + 'px'
+                };
+            }
+
+            moveInterval = setInterval(() => {
+                if (gameStarted) {
+                    const position = getRandomPosition();
+                    button.style.top = position.top;
+                    button.style.left = position.left;
+                }
+            }, 1000); // Cambia de posición cada segundo
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (timerValue <= 0) {
+                    clearInterval(timerInterval);
+                    clearInterval(moveInterval);
+                    document.getElementById('finalScore').style.display = 'block';
+                    document.getElementById('finalScoreValue').innerText = score;
+                    gameStarted = false;
+                    button.style.transition = 'none'; // Desactiva la transición al final del tiempo
+                } else {
+                    timerValue--;
+                    document.getElementById('timer').innerText = timerValue;
+                }
+            }, 1000); // Actualiza el temporizador cada segundo
+        }
+    </script>
+</body>
+</html>
